@@ -1,4 +1,31 @@
+require 'digest'
+
+$password = '5f4dcc3b5aa765d61d8327deb882cf99'
+
 class Encryptor
+
+    def initialize
+
+        wrong = true
+
+        while wrong
+
+            puts "\n\nEnter the password to continue :)"
+
+            password = gets.chomp
+
+            hashed_password = Digest::MD5.hexdigest(password)
+
+            if(hashed_password != $password)
+                wrong = true
+                puts "Wrong password hehe! gotcha ;)"
+            else
+                wrong = false
+                puts "\nWelcome, comrade"
+            end
+        end
+
+    end
 
     def cipher rotation
         chars = (' '..'z').to_a
@@ -54,5 +81,20 @@ class Encryptor
 
         file.close
         output_file.close
+    end
+
+    def realtime_encrypt rotation
+
+        puts "Enter the unencrypted text:"
+
+        encrypt(gets.chomp, rotation)
+
+    end
+
+    def realtime_decrypt rotation
+
+        puts "Enter the encrypted text:"
+
+        decrypt(gets.chomp, rotation)
     end
 end
