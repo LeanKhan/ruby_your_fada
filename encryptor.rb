@@ -2,6 +2,12 @@ require 'digest'
 
 $password = '5f4dcc3b5aa765d61d8327deb882cf99'
 
+# The year Christopher Columbos reached America *shrug*
+$rotations = [14, 9, 2]
+
+# TODO: Find a way to also hide/hash/encrypt the rotation
+# numbers. muahahahaha!
+
 class Encryptor
 
     def initialize
@@ -42,17 +48,26 @@ class Encryptor
         cipher(rotation)[letter]
     end
 
-    def encrypt string, rotation
+    def encrypt string
         result = []
-        result = string.split('').collect do |letter|
-           encrypt_letter(letter, rotation)
+        counter = 0
+        string.split('').each do |letter|
+           result << encrypt_letter(letter, $rotations[counter % 3])
+           counter += 1
         end
 
         result.join
     end
 
-    def decrypt string, rotation
-        encrypt(string, -rotation)
+    def decrypt string
+        result = []
+        counter = 0
+        string.split('').each do |letter|
+           result << encrypt_letter(letter, -$rotations[counter % 3])
+           counter += 1
+        end
+
+        result.join
     end
 
     def encrypt_file filename, rotation
@@ -63,7 +78,7 @@ class Encryptor
 
         output_file = File.open("#{filename.split('.')[0]}.enc.txt", 'w')
 
-        output_file.write(encrypt(file.read, rotation))
+        output_file.write(encrypt(file.read))
 
         file.close
         output_file.close
@@ -77,24 +92,24 @@ class Encryptor
 
         output_file = File.open("#{filename.split('.enc.txt')[0]}.dec.txt", 'w')
 
-        output_file.write(decrypt(file.read, rotation))
+        output_file.write(decrypt(file.read))
 
         file.close
         output_file.close
     end
 
-    def realtime_encrypt rotation
+    def realtime_encrypt
 
         puts "Enter the unencrypted text:"
 
-        encrypt(gets.chomp, rotation)
+        encrypt(gets.chomp)
 
     end
 
-    def realtime_decrypt rotation
+    def realtime_decrypt
 
         puts "Enter the encrypted text:"
 
-        decrypt(gets.chomp, rotation)
+        decrypt(gets.chomp)
     end
 end
