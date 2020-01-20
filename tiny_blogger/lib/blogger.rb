@@ -59,6 +59,8 @@ def doBlog
     user_template = index_erb_template.result_with_hash(data)
 
     createPage(name, user_template, true)
+
+    doBlogPost
 end
 
 def doBlogPost
@@ -70,6 +72,25 @@ def doBlogPost
     puts "Now write something, at least 5 words long :)"
 
     content = gets.chomp
+
+    json_file = File.read "../data/data.json"
+
+    json_data = JSON.parse(json_file)
+
+    # attach content
+
+    post = {:title => title, :content => content, :date_published => Time.now}
+
+    json_data["posts"] << post
+
+    json_data = JSON.pretty_generate(json_data)
+
+    filename = '../data/data.json'
+
+    File.open(filename, "w") do |file|
+        file.puts json_data
+    end    
+
 end
 
 def getBlogData 
