@@ -1,9 +1,19 @@
 {
   "name": "emmanuel segun-lean",
-  "blog_name": "popo blog",
-  "date_created": "2020-01-18 10:14:38 +0100",
+  "blog_name": "good pages",
+  "date_created": "2020-01-21 00:35:07 +0100",
   "tb_version": "0.1.0",
   "posts": [
-
-  ]
+    {
+      "title": "First One",
+      "content": "Hello World!",
+      "date_published": "2020-01-21 00:35:15 +0100"
+    },
+    {
+      "title": "New Post!",
+      "content": "Hello Friend!",
+      "date_published": "2020-01-21 15:11:59 +0100"
+    }
+  ],
+  "updated_at": "2020-01-21 15:11:59 +0100"
 }

@@ -32,6 +32,18 @@ def createPage(title, template, is_index)
     end
 end
 
+# First check if they already have an existing blog
+# if yes, just make them make a new post.
+# if not, make them create a new blog
+
+def launch
+    if File.exist? "../data/data.json"
+        doBlogPost(false)
+    else
+        doBlog
+    end
+end
+
 def doBlog
 
     puts "Welcome to Tiny Blogger! Please provide a name for your profile:"
@@ -42,7 +54,7 @@ def doBlog
     puts "What is the name of your blog?"
     blog_name = gets.chomp.downcase
 
-    data = {:name => name, :blog_name => blog_name, :date_created => Time.now, :tb_version => $version, :posts => []}
+    data = {:name => name, :blog_name => blog_name, :created_at => Time.now, :tb_version => $version, :posts => []}
 
     json_data = JSON.pretty_generate(data)
 
@@ -60,46 +72,51 @@ def doBlog
 
     createPage(name, user_template, true)
 
-    doBlogPost
+    doBlogPost(true)
 end
 
-def doBlogPost
-    puts "This is where you create a tiny-blog post\n\n"
+def doBlogPost(new_blog)
 
-    puts "Please enter the title of the post:"
-    title = gets.chomp
+    if new_blog
+        puts "This is where you create a tiny-blog post\n\n"
+        # Say hello and other things
+    else
+        # do normal
+        json_file = File.read "../data/data.json"
+    
+        json_data = JSON.parse(json_file)
 
-    puts "Now write something, at least 5 words long :)"
+        puts "You have #{json_data["posts"].length} posts already\n\n"
 
-    content = gets.chomp
+        puts "Please enter the title of your new post:"
+        title = gets.chomp
+    
+        puts "Now write something, at most 50 characters long..."
+        putc "=>"
+    
+        content = gets.chomp
+    
+        # attach content
+    
+        post = {:title => title, :content => content, :date_published => Time.now}
+    
+        json_data["posts"] << post
 
-    json_file = File.read "../data/data.json"
+        json_data["updated_at"] = Time.now
+    
+        json_data = JSON.pretty_generate(json_data)
+    
+        filename = '../data/data.json'
+    
+        # Update the data store...
+        File.open(filename, "w") do |file|
+            file.puts json_data
+        end
 
-    json_data = JSON.parse(json_file)
+    end
 
-    # attach content
-
-    post = {:title => title, :content => content, :date_published => Time.now}
-
-    json_data["posts"] << post
-
-    json_data = JSON.pretty_generate(json_data)
-
-    filename = '../data/data.json'
-
-    File.open(filename, "w") do |file|
-        file.puts json_data
-    end    
+    # At the end, generate the webpage
 
 end
 
-def getBlogData 
-    File.exist? '../data/blog.json'
-
-    blog_data = File.read '../data/data.json'
-
-    puts JSON.parse(blog_data)
-
-end
-
-doBlog
+launch
