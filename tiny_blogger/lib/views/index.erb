@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> <%= blog_name %> </title>
+    <style>
+        .post {
+            background-color: dodgerblue;
+            margin: 10px 50px;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="/css/bulma.css">
+</head>
+<body>
+    <main class="container">
+
+    <div class="hero has-text-centered" style="margin-top: 30px;">
+        <h2 class="purple">Welcome to <%= name %>'s tiny blog</h2>
+<p>Each post is a <i>tiny</i> blog post. It could be 5 words or 5 lines long</p>
+    </div>
+
+    <section class="section">
+<% if posts.length > 0 %>
+  <h4><%= posts.length %> Posts</h4>
+<% posts.each do |post| %>
+<article class="media box">
+    <figure class="media-left">
+        <p class="tag is-medium">
+            <%= Time.new(post["created_at"].to_i).strftime("%d") %>
+        </p>
+        <span>
+                    <%= Time.new(post["created_at"].to_i).strftime("%B") %>
+        </span>
+        <span>
+                    <%= Time.new(post["created_at"].to_i).strftime("%Y") %>
+        </span>
+    </figure>
+
+    <%# main content %>
+
+    <div class="media-content">
+        <div class="content">
+            <p><strong> <%= post["title"] %> </strong></p>
+            <div>
+            <%= post["content"] %>
+            </div>
+        </div>
+    </div>
+
+    <%# media right %>
+
+    <div class="media-right">
+    cOrrEct!
+    </div>
+</article><% end %>
+<% else %>
+  <span>No posts yet :(</span>
+<% end %>
+</section>
+
+<footer class="footer">
+    <%= Time.now %>. All rights reserved. <i>Tiny Blog</i> <%= tb_version %>
+</footer>
+    </main>
+</body>
+</html>
