@@ -17,7 +17,7 @@ require 'erb'
 require 'json'
 require 'sinatra'
 require 'sinatra/reloader'
-$version = '0.1.0'
+$version = '0.4.0'
 
 # [redirect to posts page]
 get "/" do
@@ -30,9 +30,9 @@ get "/posts" do
 
     data = JSON.parse(blog_data)
 
-    data["posts"] = data["posts"].sort_by do |post|
-        -post["created_at"].to_i
-    end
+    # data["posts"] = data["posts"].sort_by do |post|
+    #     -post["created_at"].to_i
+    # end
 
     erb :index, :locals => data
 end
@@ -75,7 +75,7 @@ def savePost title, content
 
     post = {:title => title, :content => content, :created_at => Time.now.to_i}
     
-    json_data["posts"] << post
+    json_data["posts"].unshift(post)
 
     json_data["updated_at"] = Time.now.to_i
 

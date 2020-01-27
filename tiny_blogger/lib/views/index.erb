@@ -34,13 +34,13 @@
         <label class="label">Make a new post</label>
         <div class="field">
             <div class="control">
-               <input class="input" name="title" type="text" placeholder="Title">
+               <input class="input" name="title" type="text" placeholder="Title" required>
             </div>
         </div>
 
         <div class="field">
             <div class="control">
-            <input class="input" name="content" type="text" placeholder="Content">
+            <input class="input" name="content" type="text" placeholder="Content" required>
             </div>
         </div>
 
@@ -73,11 +73,12 @@
     <%# media right %>
 
     <div class="media-right">
+        <a href="/posts/delete?id=<%= index %>" method="DELETE">
+
     <span class="button is-danger is-size-7">
-    <a href="/posts/delete?id=<%= index %>" method="DELETE">
     &times;
-    </a>
     </span>
+    </a>
     </div>
 </article><% end %>
 <% else %>
@@ -85,8 +86,8 @@
 <% end %>
 </section>
     </main>
-    <footer class="footer">
-    <%= Time.now %>. All rights reserved. <i>Tiny Blog</i> <%= tb_version %>
+    <footer class="footer has-text-centered">
+    <%= Time.now.strftime("%b %Y") %> All rights reserved. <i>Tiny Blog</i> <%= tb_version %>
 </footer>
 </body>
 </html>

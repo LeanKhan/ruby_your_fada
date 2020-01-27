@@ -2,13 +2,18 @@
   "name": "emmanuel segun-lean",
   "blog_name": "sparse faces",
   "created_at": 1579632954,
-  "tb_version": "0.1.0",
+  "tb_version": "0.2.0",
   "posts": [
     {
-      "title": "Hello",
-      "content": "YOOOO",
-      "created_at": 1580150060
+      "title": "Consume Signup, Login API EDIT: Changed merge branch",
+      "content": "yooooooo",
+      "created_at": 1580151554
+    },
+    {
+      "title": "A new one",
+      "content": "This is a new one o!",
+      "created_at": 1580151403
     }
   ],
-  "updated_at": 1580150060
+  "updated_at": 1580151554
 }
