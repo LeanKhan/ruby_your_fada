@@ -1,7 +1,8 @@
 # create a tinyyy cms
 # Improve this guyyyyy
 # - format blogpost titles to acceptable format [x]
-# - save blog data in csv file or JSON??? Maybe save the posts in CSV and the general blog information in JSON [x]
+# - save blog data in csv file or JSON??? Maybe save the posts in CSV and the 
+# general blog information in JSON [x]
 # - Add styles to the pages [x]
 # - Should be able to delete posts [x]
 # - Should be able to edit posts [?]
@@ -9,7 +10,8 @@
 # - make it cleaner and better [x]
 # - add a server [x]
 # - create a form for users to add new posts... [x]
-# - checkout 'Sinatra' a minimalistic (from what I've seen o) Ruby web server framework [x]
+# - checkout 'Sinatra' a minimalistic (from what I've seen o) Ruby web server 
+# framework [x]
 
 # [x] done, [?] optional, [!] important, [_] regular to do
 # require "csv"
@@ -19,14 +21,15 @@ require 'sinatra'
 require 'sinatra/reloader'
 $version = '0.4.0'
 
+class App < Sinatra::Base
 # [redirect to posts page]
-get "/" do
-    redirect "/posts"
+get '/' do
+    redirect '/posts'
 end
 
 # [get posts, render posts page]
-get "/posts" do 
-    blog_data = File.read "../data/data.json"
+get '/posts' do
+  blog_data = File.read './data/data.json'
 
     data = JSON.parse(blog_data)
 
@@ -38,13 +41,13 @@ get "/posts" do
 end
 
 # [add post]
-post "/posts" do
-
-    @title = params["title"]
+  post '/posts' do
+    
+  @title = params['title']
 
     @content = params["content"]
 
-    savePost(@title, @content)
+    save_post(@title, @content)
 
     redirect "/posts"
 end
@@ -53,13 +56,13 @@ end
 get "/posts/delete" do
     @id = params["id"].to_i
 
-    blog_data = File.read "../data/data.json"
+    blog_data = File.read "./data/data.json"
 
     data = JSON.parse(blog_data)
 
     data["posts"].delete_at(@id)
 
-    saveData(data)
+    save_data(data)
 
     redirect "/posts"
 end
@@ -67,9 +70,9 @@ end
 # blog data: data = {:name => name, :blog_name => blog_name, :created_at => Time.now.to_i, :tb_version => $version, :posts => []}
 
 # Save post
-def savePost title, content
+def save_post title, content
 
-    json_file = File.read "../data/data.json"
+    json_file = File.read "./data/data.json"
     
     json_data = JSON.parse(json_file)
 
@@ -79,17 +82,18 @@ def savePost title, content
 
     json_data["updated_at"] = Time.now.to_i
 
-    saveData(json_data)
+    save_data(json_data)
 end
 
 # Save JSON data
-def saveData data
-    json_data = JSON.pretty_generate(data)
-    
-    filename = '../data/data.json'
+def save_data data
+  json_data = JSON.pretty_generate(data)
+
+  filename = './data/data.json'
 
     # Update the data store...
     File.open(filename, "w") do |file|
-        file.puts json_data
+      file.puts json_data
     end
+end
 end
