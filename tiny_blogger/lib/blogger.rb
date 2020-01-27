@@ -2,18 +2,16 @@
 # Improve this guyyyyy
 # - format blogpost titles to acceptable format [x]
 # - save blog data in csv file or JSON??? Maybe save the posts in CSV and the general blog information in JSON [x]
-# - Add styles to the pages [!]
-# - Should be able to delete posts
+# - Add styles to the pages [x]
+# - Should be able to delete posts [x]
 # - Should be able to edit posts [?]
-# - Create themes that users will select on creation
 # - Include Date and Time [x]
-# - make it cleaner and better [!]
+# - make it cleaner and better [x]
 # - add a server [x]
-# - create a form for users to add new posts... [!]
-# - make it a command line service... [?]
+# - create a form for users to add new posts... [x]
 # - checkout 'Sinatra' a minimalistic (from what I've seen o) Ruby web server framework [x]
 
-# [x] done, [?] optional, [!] important
+# [x] done, [?] optional, [!] important, [_] regular to do
 # require "csv"
 require 'erb'
 require 'json'
@@ -21,95 +19,70 @@ require 'sinatra'
 require 'sinatra/reloader'
 $version = '0.1.0'
 
-puts "Welcome to Tiny Blogger"
-
-def createPage(title, template, is_index)
-    Dir.mkdir "views" unless Dir.exist? "views"
-
-    title = title.downcase.split(' ').join('-')
-
-    filename = !is_index ? "views/#{title}.html" : "views/index.html"
-
-    File.open(filename, "w") do |file|
-        file.puts template
-    end
+# [redirect to posts page]
+get "/" do
+    redirect "/posts"
 end
 
-# First check if they already have an existing blog
-# if yes, just make them make a new post.
-# if not, make them create a new blog
+# [get posts, render posts page]
+get "/posts" do 
+    blog_data = File.read "../data/data.json"
 
-def launch
-    if File.exist? "../data/data.json"
-        doBlogPost(false)
-    else
-        doBlog
+    data = JSON.parse(blog_data)
+
+    data["posts"] = data["posts"].sort_by do |post|
+        -post["created_at"].to_i
     end
+
+    erb :index, :locals => data
 end
 
-def doBlog
+# [add post]
+post "/posts" do
 
-    puts "Welcome to Tiny Blogger! Please provide a name for your profile:"
+    @title = params["title"]
 
-    puts "What is your name?"
-    name = gets.chomp.downcase
+    @content = params["content"]
 
-    puts "What is the name of your blog?"
-    blog_name = gets.chomp.downcase
+    savePost(@title, @content)
 
-    data = {:name => name, :blog_name => blog_name, :created_at => Time.now.to_i, :tb_version => $version, :posts => []}
+    redirect "/posts"
+end
+
+# [delete post]
+get "/posts/delete" do
+    @id = params["id"].to_i
+
+    blog_data = File.read "../data/data.json"
+
+    data = JSON.parse(blog_data)
+
+    data["posts"].delete_at(@id)
 
     saveData(data)
 
-    # index_template = File.read "../templates/index.erb"
-
-    # index_erb_template = ERB.new index_template
-
-    # user_template = index_erb_template.result_with_hash(data)
-
-    # createPage(name, user_template, true)
-
-    doBlogPost(true)
+    redirect "/posts"
 end
 
-def doBlogPost(new_blog)
+# blog data: data = {:name => name, :blog_name => blog_name, :created_at => Time.now.to_i, :tb_version => $version, :posts => []}
 
-    if new_blog
-        puts "This is where you create a tiny-blog post\n\n"
-        # Say hello and other things
-    else
-        # do normal
-        json_file = File.read "../data/data.json"
-    
-        json_data = JSON.parse(json_file)
+# Save post
+def savePost title, content
 
-        puts "You have #{json_data["posts"].length} posts already\n\n"
+    json_file = File.read "../data/data.json"
+    
+    json_data = JSON.parse(json_file)
 
-        puts "Please enter the title of your new post:"
-        title = gets.chomp
+    post = {:title => title, :content => content, :created_at => Time.now.to_i}
     
-        puts "Now write something, at most 50 characters long..."
-        putc "=>"
-    
-        content = gets.chomp
-    
-        # attach content
-    
-        post = {:title => title, :content => content, :created_at => Time.now.to_i}
-    
-        json_data["posts"] << post
+    json_data["posts"] << post
 
-        json_data["updated_at"] = Time.now.to_i
-    
-        saveData(json_data)
+    json_data["updated_at"] = Time.now.to_i
 
-        serveBlog(json_data)
-    end
-
-    # At the end, generate the webpage
-
+    saveData(json_data)
 end
 
+# Save JSON data
 def saveData data
     json_data = JSON.pretty_generate(data)
     
@@ -120,11 +93,3 @@ def saveData data
         file.puts json_data
     end
 end
-
-def serveBlog data
-   get '/' do
-     erb :index, :locals => data
-   end
-end
-
-launch
