@@ -37,50 +37,51 @@ get '/posts' do
     #     -post["created_at"].to_i
     # end
 
-    erb :index, :locals => data
+    erb :index, locals: data
 end
 
 # [add post]
-  post '/posts' do
+post '/posts' do
     
   @title = params['title']
 
-    @content = params["content"]
+    @content = params['content']
 
     save_post(@title, @content)
 
-    redirect "/posts"
+    redirect '/posts'
 end
 
 # [delete post]
-get "/posts/delete" do
-    @id = params["id"].to_i
+get '/posts/delete' do
+    @id = params['id'].to_i
 
-    blog_data = File.read "./data/data.json"
+    blog_data = File.read './data/data.json'
 
     data = JSON.parse(blog_data)
 
-    data["posts"].delete_at(@id)
+    data['posts'].delete_at(@id)
 
     save_data(data)
 
-    redirect "/posts"
+    redirect '/posts'
 end
 
-# blog data: data = {:name => name, :blog_name => blog_name, :created_at => Time.now.to_i, :tb_version => $version, :posts => []}
+# blog data: data = {:name => name, :blog_name => blog_name, :created_at =>
+# Time.now.to_i, :tb_version => $version, :posts => []}
 
 # Save post
 def save_post title, content
 
-    json_file = File.read "./data/data.json"
+    json_file = File.read './data/data.json'
     
     json_data = JSON.parse(json_file)
 
-    post = {:title => title, :content => content, :created_at => Time.now.to_i}
+    post = {title: title, content: content, created_at: Time.now.to_i}
     
-    json_data["posts"].unshift(post)
+    json_data['posts'].unshift(post)
 
-    json_data["updated_at"] = Time.now.to_i
+    json_data['updated_at'] = Time.now.to_i
 
     save_data(json_data)
 end
@@ -92,7 +93,7 @@ def save_data data
   filename = './data/data.json'
 
     # Update the data store...
-    File.open(filename, "w") do |file|
+    File.open(filename, 'w') do |file|
       file.puts json_data
     end
 end
